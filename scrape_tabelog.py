@@ -14,8 +14,8 @@ import time
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-ramen_store_file = 'output/ramen_store.csv'
-ramen_review_file = 'output/ramen_review.csv'
+ramen_store_file = 'output/latest_data/ramen_store.csv'
+ramen_review_file = 'output/latest_data/ramen_review.csv'
 
 
 class Tabelog:
@@ -211,7 +211,7 @@ if __name__ == '__main__':
     begin_time = time.time()
 
     base_url = 'https://tabelog.com/tokyo/rstLst/ramen/'
-    tabelog = Tabelog(base_url, begin_page=6 ,end_page=10)
+    tabelog = Tabelog(base_url, begin_page=16, end_page=20)
 
     runtime = (time.time() - begin_time) / 60
     print(f'実行時間: {runtime} min')
