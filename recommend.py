@@ -24,9 +24,9 @@ def calc_score(word1, word2):
 def search_similar_stores(virtual_store):
     avg_scores = []
     # 実在する店舗
-    for words_a in existing_stores['texts_tfidf_sorted_top20']:
+    for existiong_store in existing_stores['texts_tfidf_sorted_top20']:
         word_scores = []
-        for word_a in words_a:
+        for word_a in existiong_store:
             # 仮想店舗
             for word_b in virtual_store:
                 score = calc_score(word_a, word_b)
@@ -38,9 +38,3 @@ def search_similar_stores(virtual_store):
     ranking = existing_stores.sort_values('avg_cos_sim_rate', ascending=False)
     top5 = ranking[:5].merge(existing_stores_info)
     return top5[['ID', 'name', 'url', 'score', 'avg_cos_sim_rate']]
-
-
-if __name__ == '__main__':
-    virtual_store = ['二郎', 'ニンニク', 'アブラ', 'カラメ', '大盛り']
-    result = search_similar_stores(virtual_store)
-    print(result)
