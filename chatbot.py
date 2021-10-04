@@ -5,13 +5,10 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 import exract_words
 import recommend
-#import telegram_token
+import telegram_token
 
 # telegram_token.pyファイルに以下を書き込む
-# endo
-#TOKEN = "2042422731:AAH49cngplidJOCpMpyLneEE8IrjeA64RT4"
-
-#TOKEN = telegram_token.TOKEN
+TOKEN = telegram_token.TOKEN
 
 # 以下の部分を各自書き換えれば自分のシステムができる
 # ctrl-cで強制終了
