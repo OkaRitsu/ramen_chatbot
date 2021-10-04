@@ -211,7 +211,7 @@ if __name__ == '__main__':
     begin_time = time.time()
 
     base_url = 'https://tabelog.com/tokyo/rstLst/ramen/'
-    tabelog = Tabelog(base_url, begin_page=16, end_page=20)
+    tabelog = Tabelog(base_url, begin_page=21, end_page=25)
 
     runtime = (time.time() - begin_time) / 60
     print(f'実行時間: {runtime} min')
