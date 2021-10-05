@@ -17,7 +17,7 @@ TOKEN = telegram_token.TOKEN
 class SampleBot:
     def __init__(self):
         self.counter = 0
-        self.answer = ""
+        self.answer = []
         pass
 
     def start(self, bot, update):
@@ -34,7 +34,7 @@ class SampleBot:
             # update.message.textでtelegramのユーザーからの入力を取得
             response_text = update.message.text
             if response_text != "なし":
-                self.answer += response_text + ' '
+                self.answer.extend(exract_words.search_corpus(response_text))
                 update.message.reply_text(f"{response_text}っておいしいよね")
             update.message.reply_text("趣味は何かあるかな？無ければ，”なし”と答えてね！")
             self.counter += 1
@@ -43,7 +43,7 @@ class SampleBot:
         elif self.counter == 1:
             response_text = update.message.text
             if response_text != "なし":
-                self.answer += response_text + ' '
+                self.answer.extend(exract_words.search_corpus(response_text))
                 update.message.reply_text(f"{response_text}いいね！")
             update.message.reply_text("次にラーメンのことについて教えて！")
             update.message.reply_text("何ラーメンが好き？僕は味噌ラーメンが好き")
@@ -55,7 +55,7 @@ class SampleBot:
             if response_text == "なし":
                 pass
             else:
-                self.answer += response_text + ' '
+                self.answer.extend(exract_words.search_corpus(response_text))
 
                 if "醤油" in response_text or "しょうゆ" in response_text:
                     update.message.reply_text(
@@ -94,7 +94,7 @@ class SampleBot:
             if response_text == "なし":
                 pass
             else:
-                self.answer += response_text + ' '
+                self.answer.extend(exract_words.search_corpus(response_text))
 
                 if "チャーシュー" in response_text:
                     update.message.reply_text(
@@ -127,18 +127,19 @@ class SampleBot:
             self.counter = 0
             response_text = update.message.text
             if response_text != "なし":
-                self.answer += response_text + ' '
+                self.answer.extend(exract_words.search_corpus(response_text))
                 update.message.reply_text(f"{response_text}いいね！")
 
             update.message.reply_text(
                 "今まで教えてくれた情報からおすすめのラーメン屋を見つけてくるから，ちょっと待っててね")
 
-            response_words = exract_words.search_corpus(self.answer)
-            print(f"モデルにある単語{response_words}")
-            result_ramen_stores = recommend.search_similar_stores(
-                response_words)
+            print(f"モデルにある単語{self.answer}")
+            result_ramen_stores = recommend.search_similar_stores(self.answer)
             print(result_ramen_stores)
             update.message.reply_text(result_ramen_stores.loc[0]['url'])
+            update.message.reply_text(result_ramen_stores.loc[1]['url'])
+            update.message.reply_text(result_ramen_stores.loc[2]['url'])
+
             update.message.reply_text('．．．システム停止')
 
 
