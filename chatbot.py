@@ -57,38 +57,46 @@ class SampleBot:
                 update.message.reply_text(f"{response_text}いいね！")
             update.message.reply_text("好きなトッピングはある？僕は，コーンとバターが好き！")
             self.counter += 1
-        
+
         elif self.counter == 3:
             response_text = update.message.text
             if response_text != "なし":
                 self.answer += response_text + ' '
                 update.message.reply_text(f"{response_text}いいね！")
-            update.message.reply_text("麺の太さの好みは？僕は太麺がいいなー")
-            self.counter += 1
-
-        elif self.counter == 4:
-            response_text = update.message.text
-            if response_text != "なし":
-                self.answer += response_text + ' '
-                update.message.reply_text(f"{response_text}いいね！")
-            update.message.reply_text("最後に他の好み教えて！調味料とか，色とかなんでも大丈夫だよ！無ければ，”なし”と答えてね！")
+            update.message.reply_text("最後に他の好み教えて！調味料とか，麺の太さとかなんでも大丈夫だよ！無ければ，”なし”と答えてね！")
             self.counter += 1
 
         # 言語処理への興味
-        elif self.counter == 5:
+        elif self.counter == 4:
             self.counter = 0
             response_text = update.message.text
             if response_text != "なし":
                 self.answer += response_text + ' '
                 update.message.reply_text(f"{response_text}いいね！")
-            update.message.reply_text("今まで教えてくれた情報からおすすめのラーメン屋を見つけてくるから，ちょっと待っててね")
+            update.message.reply_text("今まで教えてくれた情報からおすすめのラーメン屋を見つけてくるね！")
 
             response_words = exract_words.search_corpus(self.answer)
             print(response_words)
             result_ramen_stores = recommend.search_similar_stores(response_words)
-            print(result_ramen_stores)
-            update.message.reply_text(result_ramen_stores.loc[0]['url'])
+
+            update.message.reply_text(self.make_recommend_message(
+                '一押しのラーメン屋はこちら！！！', result_ramen_stores[0]
+            ))
+
+            update.message.reply_text(self.make_recommend_message(
+                'おすすめのラーメン屋はこちら！！', result_ramen_stores[1]
+            ))
+
+            update.message.reply_text(self.make_recommend_message(
+                'こんなラーメン屋はどうかな？', result_ramen_stores[2]
+            ))
+
             update.message.reply_text('．．．システム停止')
+
+    def make_recommend_message(self, message, store):
+        recommend_message = message + '\n'
+        recommend_message += store['url']
+        return recommend_message
         
 
 #telegramの動作コマンド（変えなくても動くはず）
