@@ -35,7 +35,7 @@ class SampleBot:
             response_text = update.message.text
             if response_text != "なし":
                 self.answer.extend(exract_words.search_corpus(response_text))
-                update.message.reply_text(f"{response_text}っておいしいよね")
+                update.message.reply_text("ラーメン以外にもおいしいものはたくさんあるよね！")
             update.message.reply_text("趣味は何かあるかな？無ければ，”なし”と答えてね！")
             self.counter += 1
 
@@ -44,7 +44,7 @@ class SampleBot:
             response_text = update.message.text
             if response_text != "なし":
                 self.answer.extend(exract_words.search_corpus(response_text))
-                update.message.reply_text(f"{response_text}いいね！")
+                update.message.reply_text("いいね！")
             update.message.reply_text("次にラーメンのことについて教えて！")
             update.message.reply_text("何ラーメンが好き？僕は味噌ラーメンが好き")
             self.counter += 1
@@ -87,18 +87,6 @@ class SampleBot:
 
             update.message.reply_text("好きなトッピングはある？僕は，コーンとバターが好き！")
             self.counter += 1
-<<<<<<< HEAD
-
-        elif self.counter == 3:
-            response_text = update.message.text
-            if response_text != "なし":
-                self.answer += response_text + ' '
-                update.message.reply_text(f"{response_text}いいね！")
-            update.message.reply_text("最後に他の好み教えて！調味料とか，麺の太さとかなんでも大丈夫だよ！無ければ，”なし”と答えてね！")
-            self.counter += 1
-
-        # 言語処理への興味
-=======
 
         # トッピング
         elif self.counter == 3:
@@ -126,6 +114,12 @@ class SampleBot:
                 elif "ネギ" in response_text or "ねぎ" in response_text:
                     update.message.reply_text(
                         "ネギがのっていると味にアクセントがついて美味しいよね．東日本では白ネギ，西日本では青ネギが一般的なんだって．")
+                elif "コーン" in response_text:
+                    update.message.reply_text(
+                        "コーン！僕と一緒だ！甘くておいしいよねー．あのプチプチした食感も病みつきになるよね．")
+                elif "バター" in response_text:
+                    update.message.reply_text(
+                        "僕と一緒だ！バターを入れると一気に味が濃厚になるよね！")
                 else:
                     update.message.reply_text(
                         "珍しいトッピングが好きなんだね．トッピングだけみても店によって色々あって面白いよね．")
@@ -135,18 +129,18 @@ class SampleBot:
             self.counter += 1
 
         # その他 ＆ レコメンド
->>>>>>> b0cd2907090963c10371a455f6b0a9e6449d3db1
         elif self.counter == 4:
             self.counter = 0
             response_text = update.message.text
             if response_text != "なし":
                 self.answer.extend(exract_words.search_corpus(response_text))
-                update.message.reply_text(f"{response_text}いいね！")
-<<<<<<< HEAD
+
+            print(f"モデルにある単語{self.answer}")
             update.message.reply_text("今まで教えてくれた情報からおすすめのラーメン屋を見つけてくるね！")
 
             response_words = exract_words.search_corpus(self.answer)
             print(response_words)
+
             result_ramen_stores = recommend.search_similar_stores(response_words)
 
             update.message.reply_text(self.make_recommend_message(
@@ -161,31 +155,14 @@ class SampleBot:
                 'こんなラーメン屋はどうかな？', result_ramen_stores[2]
             ))
 
-            update.message.reply_text('．．．システム停止')
+            update.message.reply_text('君とのお話とっても楽しかったよ！\nまたラーメンについて知りたくなったらお話ししよう！')
 
     def make_recommend_message(self, message, store):
         recommend_message = message + '\n'
         recommend_message += store['url']
         return recommend_message
-        
-=======
-
-            update.message.reply_text(
-                "今まで教えてくれた情報からおすすめのラーメン屋を見つけてくるから，ちょっと待っててね")
-
-            print(f"モデルにある単語{self.answer}")
-            result_ramen_stores = recommend.search_similar_stores(self.answer)
-            print(result_ramen_stores)
-            update.message.reply_text(result_ramen_stores.loc[0]['url'])
-            update.message.reply_text(result_ramen_stores.loc[1]['url'])
-            update.message.reply_text(result_ramen_stores.loc[2]['url'])
-
-            update.message.reply_text('．．．システム停止')
->>>>>>> b0cd2907090963c10371a455f6b0a9e6449d3db1
-
 
 # telegramの動作コマンド（変えなくても動くはず）
-
     def run(self):
         updater = Updater(TOKEN)
 
