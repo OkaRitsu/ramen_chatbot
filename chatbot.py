@@ -125,39 +125,54 @@ class SampleBot:
                         "珍しいトッピングが好きなんだね．トッピングだけみても店によって色々あって面白いよね．")
 
             update.message.reply_text(
-                "最後に他の好み教えて！調味料とか，色とかなんでも大丈夫だよ！無ければ，”なし”と答えてね！")
+                "他の好み教えて！調味料とか，色とかなんでも大丈夫だよ！無ければ，”なし”と答えてね！")
             self.counter += 1
 
-        # その他 ＆ レコメンド
+        # その他
         elif self.counter == 4:
-            self.counter = 0
             response_text = update.message.text
             if response_text != "なし":
                 self.answer.extend(exract_words.search_corpus(response_text))
+                update.message.reply_text("いいね！")
+            update.message.reply_text("最後に区市町村を教えて！例えば，「足立区」とか。”なし”と入力したら東京全体から探すよ！")
+            self.counter += 1            
 
-            print(f"モデルにある単語{self.answer}")
+        # 地区 ＆ レコメンド
+        elif self.counter == 5:
+            response_text = update.message.text
+            user_area = ""
+
+            if response_text != "なし":
+                user_area = response_text      
+
+            print(f"モデルにある単語{self.answer}")            
+            result_ramen_stores = recommend.search_similar_stores(self.answer, user_area)      
+
+            while result_ramen_stores.empty :
+                update.message.reply_text("そんな区市町村知らない。")
+                user_area = update.message.text
+                result_ramen_stores = recommend.search_similar_stores(response_words, user_area)  
+            
+
             update.message.reply_text("今まで教えてくれた情報からおすすめのラーメン屋を見つけてくるね！")
-
-            response_words = exract_words.search_corpus(self.answer)
-            print(response_words)
-
-            result_ramen_stores = recommend.search_similar_stores(response_words)
+            print(result_ramen_stores.loc[:,"name"])
 
             update.message.reply_text(self.make_recommend_message(
-                '一押しのラーメン屋はこちら！！！', result_ramen_stores[0]
+                '一押しのラーメン屋はこちら！！！', result_ramen_stores.iloc[0]
             ))
 
             update.message.reply_text(self.make_recommend_message(
-                'おすすめのラーメン屋はこちら！！', result_ramen_stores[1]
+                'おすすめのラーメン屋はこちら！！', result_ramen_stores.iloc[1]
             ))
 
             update.message.reply_text(self.make_recommend_message(
-                'こんなラーメン屋はどうかな？', result_ramen_stores[2]
+                'こんなラーメン屋はどうかな？', result_ramen_stores.iloc[2]
             ))
 
             update.message.reply_text('君とのお話とっても楽しかったよ！\nまたラーメンについて知りたくなったらお話ししよう！')
 
     def make_recommend_message(self, message, store):
+        self.counter = 0
         recommend_message = message + '\n'
         recommend_message += store['url']
         return recommend_message
