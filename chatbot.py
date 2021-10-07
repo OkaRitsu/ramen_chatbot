@@ -18,6 +18,7 @@ class SampleBot:
     def __init__(self):
         self.counter = 0
         self.answer = []
+        self.ranking = []
         pass
 
     def start(self, bot, update):
@@ -66,7 +67,7 @@ class SampleBot:
                 elif "塩" in response_text or "しお" in response_text:
                     update.message.reply_text(
                         "塩ラーメン！シンプルだけど，色々な出汁の味が楽しめて美味しいよね")
-                elif "とんこつ" in response_text:
+                elif "とんこつ" in response_text or "豚骨" in response_text:
                     update.message.reply_text(
                         "博多ラーメンで有名なとんこつラーメンか！博多ラーメンの極細麺はいくらでも替え玉して食べれちゃうよね．")
                 elif "二郎" in response_text:
@@ -130,7 +131,6 @@ class SampleBot:
 
         # その他 ＆ レコメンド
         elif self.counter == 4:
-            self.counter = 0
             response_text = update.message.text
             if response_text != "なし":
                 self.answer.extend(exract_words.search_corpus(response_text))
@@ -138,29 +138,50 @@ class SampleBot:
             print(f"モデルにある単語{self.answer}")
             update.message.reply_text("今まで教えてくれた情報からおすすめのラーメン屋を見つけてくるね！")
 
-            response_words = exract_words.search_corpus(self.answer)
-            print(response_words)
+            result_ramen_stores, ranking = recommend.search_similar_stores(self.answer)
+            self.ranking = ranking
 
-            result_ramen_stores = recommend.search_similar_stores(response_words)
+            print(result_ramen_stores.loc[:,["name","texts_tfidf_sorted_top20"]])
 
             update.message.reply_text(self.make_recommend_message(
-                '一押しのラーメン屋はこちら！！！', result_ramen_stores[0]
+                '一押しのラーメン屋はこちら！！！', result_ramen_stores.iloc[0]
             ))
 
             update.message.reply_text(self.make_recommend_message(
-                'おすすめのラーメン屋はこちら！！', result_ramen_stores[1]
+                'おすすめのラーメン屋はこちら！！', result_ramen_stores.iloc[1]
             ))
 
             update.message.reply_text(self.make_recommend_message(
-                'こんなラーメン屋はどうかな？', result_ramen_stores[2]
+                'こんなラーメン屋はどうかな？', result_ramen_stores.iloc[2]
             ))
+            update.message.reply_text("行きやすいお店なかったりする？なければ行きやすい地区教えて！これで良ければ“以上”と入力してね")
+            self.counter += 1  
 
+        # 地区
+        elif self.counter == 5:
+            user_area = update.message.text
+            new_ranking = recommend.search_area(user_area, self.ranking)
+
+            while new_ranking.empty and user_area != "以上":
+                update.message.reply_text("そんな区市町村知らない。")
+                user_area = update.message.text
+                new_ranking = recommend.search_area(response_text, self.ranking)  
+            
+            if user_area != "以上":
+                update.message.reply_text(self.make_recommend_message(
+                    f'{user_area}のおすすめはこちら！', new_ranking.iloc[0]
+                ))
+
+            self.answer = []
+            self.counter = 0
             update.message.reply_text('君とのお話とっても楽しかったよ！\nまたラーメンについて知りたくなったらお話ししよう！')
+
 
     def make_recommend_message(self, message, store):
         recommend_message = message + '\n'
         recommend_message += store['url']
         return recommend_message
+
 
 # telegramの動作コマンド（変えなくても動くはず）
     def run(self):
