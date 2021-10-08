@@ -21,6 +21,8 @@ class RamenBot:
         pass
 
     def start(self, bot, update):
+        self.counter = 0
+        self.answer = []
         # update.message.reply_text()内にテキストを入れるとtelegramに送信
         update.message.reply_text("こんにちは。ラーメンマイスターだよ")
         update.message.reply_text("はじめに，君のことについて教えて！")
@@ -189,8 +191,6 @@ class RamenBot:
                     )
                 )
 
-            self.answer = []
-            self.counter = 0
             update.message.reply_text("君とのお話とっても楽しかったよ！\nまたラーメンについて知りたくなったらお話ししよう！")
 
     def make_recommend_message(self, message, store):
