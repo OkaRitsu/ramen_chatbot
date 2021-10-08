@@ -177,21 +177,18 @@ class RamenBot:
         elif self.counter == 5:
             user_area = update.message.text
             new_ranking = recommend.search_area(user_area, self.ranking)
-
-            # 正しいarea名を受け取るまで聞き返す
-            while new_ranking.empty and user_area != "以上":
-                update.message.reply_text("そんな区市町村知らない。")
-                user_area = update.message.text
-                new_ranking = recommend.search_area(user_area, self.ranking)
-
-            if user_area != "以上":
-                update.message.reply_text(
-                    self.make_recommend_message(
-                        f"{user_area}のおすすめはこちら！", new_ranking.iloc[0]
-                    )
-                )
-
-            update.message.reply_text("君とのお話とっても楽しかったよ！\nまたラーメンについて知りたくなったらお話ししよう！")
+            
+            if user_area == "以上":
+                update.message.reply_text("君とのお話とっても楽しかったよ！\nまたラーメンについて知りたくなったらお話ししよう！")
+            else:    
+                # 正しいarea名を受け取るまで聞き返す
+                if new_ranking.empty:
+                    update.message.reply_text("そんな区市町村知らない。")
+                else:
+                    update.message.reply_text(self.make_recommend_message(
+                        f"{user_area}のおすすめはこちら！", new_ranking.iloc[0]))
+                    update.message.reply_text("君とのお話とっても楽しかったよ！\nまたラーメンについて知りたくなったらお話ししよう！")
+           
 
     def make_recommend_message(self, message, store):
         recommend_message = message + "\n"
