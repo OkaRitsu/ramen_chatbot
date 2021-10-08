@@ -180,7 +180,7 @@ class RamenBot:
             while new_ranking.empty and user_area != "以上":
                 update.message.reply_text("そんな区市町村知らない。")
                 user_area = update.message.text
-                new_ranking = recommend.search_area(response_text, self.ranking)
+                new_ranking = recommend.search_area(user_area, self.ranking)
 
             if user_area != "以上":
                 update.message.reply_text(
